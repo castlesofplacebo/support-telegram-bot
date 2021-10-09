@@ -1,6 +1,5 @@
 import asyncio
 import json
-import webbrowser
 
 from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
@@ -10,6 +9,8 @@ from aiogram.utils import executor
 from config import TOKEN
 from database.db_init import storage, run_db
 from database.models import MessageInfo
+from database.db_commands import set_message, get_all_messages
+from web.to_html import test_html
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot, storage=storage)
@@ -38,34 +39,12 @@ async def process_start_command(message: types.Message):
 
 
 @dp.message_handler(content_types=ContentType.ANY)
-async def send_message(message: types.Message):
-    await MessageInfo(username=message.from_user.id, data=str(message)).save()
+async def send_message_to_db(message: types.Message):
+    await set_message(message)
 
 
-async def get_all_messages():
-    print(await MessageInfo.all().values())
-
-
-async def test():
-    f = open('messages.html', 'w')
-
-    html_template = """<html>
-    <head>
-    <title>All messages</title>
-    </head>
-    <body>
-    <h2>Welcome</h2>
-
-    <p>Messages goes here...</p>
-
-    </body>
-    </html>
-    """
-
-    f.write(html_template)
-    f.close()
-
-    webbrowser.open('messages.html')
+async def get_all_messages_from_db():
+    print(await get_all_messages())
 
 
 if __name__ == '__main__':
