@@ -1,5 +1,6 @@
 import asyncio
 import json
+import webbrowser
 
 from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
@@ -21,30 +22,50 @@ async def process_start_command(message: types.Message):
         "ниже")
 
 
-@dp.message_handler(commands=['get'])
-async def get_messages(message: types.Message):
-    print(await MessageInfo.all().values())
+# @dp.message_handler(commands=['search'])
+# async def search_by_username(message: types.Message):
+# argument = message.get_args()
+# message_list = await MessageInfo.filter(username=argument).values("data")
+# for i in message_list:
+# to chat
+# str_message = i.get('data')
+# dict_message = json.loads(str_message)
+# new_msg = types.Message(**dict_message)
+# await new_msg.send_copy(message.chat.id)
 
-
-@dp.message_handler(commands=['search'])
-async def search_by_username(message: types.Message):
-    argument = message.get_args()
-    message_list = await MessageInfo.filter(username=argument).values("data")
-    for i in message_list:
-        # to chat
-        str_message = i.get('data')
-        dict_message = json.loads(str_message)
-        new_msg = types.Message(**dict_message)
-        await new_msg.send_copy(message.chat.id)
-
-        # to console
-        # print(i.get('data'))
+# to console
+# print(i.get('data'))
 
 
 @dp.message_handler(content_types=ContentType.ANY)
 async def send_message(message: types.Message):
     await MessageInfo(username=message.from_user.id, data=str(message)).save()
-    await message.reply("Ваше сообщение отправлено администратору")
+
+
+async def get_all_messages():
+    print(await MessageInfo.all().values())
+
+
+async def test():
+    f = open('messages.html', 'w')
+
+    html_template = """<html>
+    <head>
+    <title>All messages</title>
+    </head>
+    <body>
+    <h2>Welcome</h2>
+
+    <p>Messages goes here...</p>
+
+    </body>
+    </html>
+    """
+
+    f.write(html_template)
+    f.close()
+
+    webbrowser.open('messages.html')
 
 
 if __name__ == '__main__':
