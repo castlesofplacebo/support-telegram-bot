@@ -1,5 +1,4 @@
 import asyncio
-import json
 
 from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
@@ -10,7 +9,7 @@ from config import TOKEN
 from database.db_init import storage, run_db
 from database.models import MessageInfo
 from database.db_commands import set_message, get_all_messages
-from web.to_html import test_html
+from web.to_html import get_html, json_messages
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot, storage=storage)
@@ -43,12 +42,12 @@ async def send_message_to_db(message: types.Message):
     await set_message(message)
 
 
-async def get_all_messages_from_db():
-    print(await get_all_messages())
-
-
 if __name__ == '__main__':
     print("Started")
     loop = asyncio.get_event_loop()
     loop.create_task(run_db())
     executor.start_polling(dp)
+
+    loop.run_until_complete(
+        get_html()
+    )

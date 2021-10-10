@@ -7,4 +7,4 @@ async def set_message(message: types.Message):
 
 
 async def get_all_messages():
-    print(await MessageInfo.all().values())
+    await MessageInfo.all().values()
