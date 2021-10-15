@@ -8,8 +8,8 @@ from aiogram.utils import executor
 from config import TOKEN
 from database.db_init import storage, run_db
 from database.models import MessageInfo
-from database.db_commands import set_message, get_all_messages
-from web.to_html import get_html, json_messages
+from database.db_commands import set_message
+from web.to_html import get_html
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot, storage=storage)
@@ -49,5 +49,6 @@ if __name__ == '__main__':
     executor.start_polling(dp)
 
     loop.run_until_complete(
-        get_html()
+        get_html(193557490)
     )
+    #app.on_startup.append()

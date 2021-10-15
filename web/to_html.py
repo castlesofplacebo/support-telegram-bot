@@ -2,11 +2,11 @@ import webbrowser
 import json
 import aiofiles
 
-from database.models import MessageInfo
+from database.db_commands import get_all_messages
 
 
 async def json_messages():
-    message_list = await MessageInfo.all().values("data")
+    message_list = await get_all_messages()
     json_list = []
     for i in message_list:
         str_message = i.get('data')
@@ -15,9 +15,19 @@ async def json_messages():
     return json_list
 
 
-async def get_html():
+async def user_messages(user_id):
+    message_list = await get_all_messages()
+    json_list = []
+    for i in message_list:
+        json_message = json.loads(i.get('data'))
+        json_id = json_message['from']['id']
+        if json_id == user_id:
+            json_list.append(json_message)
+    return json_list
+
+
+async def get_html(user_id):
     async with aiofiles.open(f'messages.html', mode='w') as f:
-        # TODO: обращение к ассинхронным функциям внутри get_html()
         await f.write(
             f"""<html>
                     <head>
@@ -28,7 +38,7 @@ async def get_html():
                             <h3>All messages:</h3>
                         </header>
                         <main>
-                            <p>{str(await MessageInfo.all().values("data"))}</p>
+                            <p>{await user_messages(user_id)}</p>
                         </main>
                         <footer></footer>
                     </body>
