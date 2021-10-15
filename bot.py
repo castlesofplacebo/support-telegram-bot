@@ -39,6 +39,7 @@ async def process_start_command(message: types.Message):
 
 @dp.message_handler(content_types=ContentType.ANY)
 async def send_message_to_db(message: types.Message):
+    print(message)
     await set_message(message)
 
 
