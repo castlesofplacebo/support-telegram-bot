@@ -1,3 +1,7 @@
 .idea
-
+venv
 config.py
+*.pyc
+.DS_Store
+db.sqlite3
+db.sqlite3-*

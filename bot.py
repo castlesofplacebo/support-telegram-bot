@@ -1,14 +1,15 @@
+import asyncio
+
 from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
-from aiogram.utils import executor
 from aiogram.types.message import ContentType
-from tortoise import Tortoise, fields, run_async
+from aiogram.utils import executor
 
 from config import TOKEN
 from database.db_init import storage, run_db
 from database.models import MessageInfo
+from database.db_commands import set_message, get_user_messages
 
-import asyncio
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot, storage=storage)
@@ -21,18 +22,14 @@ async def process_start_command(message: types.Message):
         "ниже")
 
 
-@dp.message_handler(commands=['get'])
-async def get_messages(message: types.Message):
-    print(await MessageInfo.all().values())
-
-
 @dp.message_handler(content_types=ContentType.ANY)
-async def send_message(message: types.Message):
-    await MessageInfo(data=str(message)).save()
-    await message.reply("Ваше сообщение отправлено администратору")
+async def send_message_to_db(message: types.Message):
+    print(message)
+    await set_message(message)
 
 
 if __name__ == '__main__':
+    print("Started")
     loop = asyncio.get_event_loop()
     loop.create_task(run_db())
     executor.start_polling(dp)
