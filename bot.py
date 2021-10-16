@@ -1,17 +1,20 @@
 import asyncio
 
+from aiohttp import web
 from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
 from aiogram.types.message import ContentType
-from aiogram.utils import executor
 
 from config import TOKEN
 from database.db_init import storage, run_db
 from database.models import MessageInfo
-from database.db_commands import set_message, get_user_messages
+from database.db_commands import set_message
+from web.setup_routes import setup_routes
 
-
-bot = Bot(token=TOKEN)
+app = web.Application()
+setup_routes(app)
+loop = asyncio.get_event_loop()
+bot = Bot(TOKEN, loop=loop)
 dp = Dispatcher(bot, storage=storage)
 
 
@@ -28,8 +31,20 @@ async def send_message_to_db(message: types.Message):
     await set_message(message)
 
 
+async def on_startup(app):
+    await run_db()
+    asyncio.create_task(dp.start_polling())
+
+
+async def on_shutdown(app):
+    await dp.storage.close()
+    await dp.storage.wait_closed()
+
+
 if __name__ == '__main__':
     print("Started")
-    loop = asyncio.get_event_loop()
-    loop.create_task(run_db())
-    executor.start_polling(dp)
+
+    app.on_startup.append(on_startup)
+    app.on_shutdown.append(on_shutdown)
+
+    web.run_app(app)
