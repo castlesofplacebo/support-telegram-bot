@@ -1,3 +1,2 @@
 aiogram==2.15
 tortoise-orm==0.17.7
-aiofiles~=0.7.0

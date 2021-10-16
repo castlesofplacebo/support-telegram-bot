@@ -1,7 +1,6 @@
 .idea
 venv
 config.py
-messages.html
 *.pyc
 .DS_Store
 db.sqlite3

@@ -8,3 +8,7 @@ async def set_message(message: types.Message):
 
 async def get_all_messages():
     return await MessageInfo.all().values("data")
+
+
+async def get_user_messages(user_id):
+    return await MessageInfo.filter(username=user_id).values("data")
