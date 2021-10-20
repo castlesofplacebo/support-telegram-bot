@@ -1,7 +1,8 @@
-from web.views import index
+from web.views import index, get_all, get_chat, send
+
 
 def setup_routes(app):
     app.router.add_get('/', index)
-    # app.router.add_get('/all', index)
-    # app.router.add_get('/chat/{id}', index)
-    # app.router.add_post('/sendMessage', send)
+    app.router.add_get('/all', get_all)
+    app.router.add_get('/chat', get_chat)  # request "/chat?user_id=..."
+    app.router.add_post('/send', send)
