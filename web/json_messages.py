@@ -1,5 +1,4 @@
 import json
-
 from database.db_commands import get_all_messages, get_user_messages
 
 
