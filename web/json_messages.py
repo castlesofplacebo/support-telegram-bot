@@ -1,9 +1,8 @@
 import json
-
 from database.db_commands import get_all_messages, get_user_messages
 
 
-async def to_json(message_list):
+def to_json(message_list):
     json_list = []
     for i in message_list:
         str_message = i.get('data')
